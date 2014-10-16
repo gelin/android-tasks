@@ -2,6 +2,7 @@ package com.lendamage.android.tasks;
 
 import android.content.Context;
 import android.util.JsonReader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,33 +19,38 @@ import java.util.List;
 public class TasksAdapter extends BaseAdapter {
 
     private final Context context;
+    private final String taskPath;
     List<String> list = new ArrayList<String>();
 
     public TasksAdapter(Context context, String taskPath) {
         this.context = context;
+        this.taskPath = taskPath;
         try {
             Reader jsonFile = new InputStreamReader(this.context.getAssets().open("tasks.json"));
             JsonReader json = new JsonReader(jsonFile);
-            readTaskList(json, taskPath, "");
+            readTaskList(json, "");
+            json.close();
         } catch (IOException e) {
-            //ignore error
+            Log.e(Tag.TAG, "Failed to parse JSON", e);
         }
     }
 
-    void readTaskList(JsonReader json, String taskPath, String curPath) throws IOException {
+    void readTaskList(JsonReader json, String curPath) throws IOException {
         json.beginArray();
         while (json.hasNext()) {
             json.beginObject();
+            String taskName = "";
             while (json.hasNext()) {
                 String name = json.nextName();
                 if ("name".equals(name)) {
-                    String taskName = json.nextString();
-                    if (curPath.equals(taskPath)) {
+                    taskName = json.nextString();
+                    if (this.taskPath.equals(curPath)) {
                         this.list.add(taskName);
                     }
-                    curPath = curPath + "/" + taskName;
                 } else if ("sub".equals(name)) {
-                    readTaskList(json, taskPath, curPath);
+                    readTaskList(json, curPath + "/" + taskName);
+                } else {
+                    json.skipValue();
                 }
             }
             json.endObject();
