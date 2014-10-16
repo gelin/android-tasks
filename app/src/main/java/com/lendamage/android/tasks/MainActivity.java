@@ -12,8 +12,7 @@ import android.view.ViewGroup;
 import android.os.Build;
 
 
-
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements TasksFragment.OnFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,7 +20,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaceholderFragment())
+                    .add(R.id.container, TasksFragment.newInstance(""))
                     .commit();
         }
     }
@@ -46,6 +45,11 @@ public class MainActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onFragmentInteraction(String taskName) {
+        //TODO
+    }
+
     /**
      * A placeholder fragment containing a simple view.
      */
@@ -61,4 +65,5 @@ public class MainActivity extends Activity {
             return rootView;
         }
     }
+
 }
