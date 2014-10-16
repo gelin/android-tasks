@@ -3,6 +3,7 @@ package com.lendamage.android.tasks;
 import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,13 +15,24 @@ import android.os.Build;
 
 public class MainActivity extends Activity implements TasksFragment.OnFragmentInteractionListener {
 
+    public static final String EXTRA_TASK_PATH = "taskPath";
+
+    private String taskPath;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Intent intent = getIntent();
+        this.taskPath = intent.getStringExtra(EXTRA_TASK_PATH);
+        if (this.taskPath == null) {
+            this.taskPath = "";
+        }
+
         if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
-                    .add(R.id.container, TasksFragment.newInstance(""))
+                    .add(R.id.container, TasksFragment.newInstance(this.taskPath))
                     .commit();
         }
     }
@@ -47,7 +59,9 @@ public class MainActivity extends Activity implements TasksFragment.OnFragmentIn
 
     @Override
     public void onFragmentInteraction(String taskName) {
-        //TODO
+        Intent intent = new Intent(getBaseContext(), MainActivity.class);
+        intent.putExtra(EXTRA_TASK_PATH, this.taskPath + "/" + taskName);
+        startActivity(intent);
     }
 
     /**

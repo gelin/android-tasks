@@ -25,21 +25,31 @@ public class TasksAdapter extends BaseAdapter {
         try {
             Reader jsonFile = new InputStreamReader(this.context.getAssets().open("tasks.json"));
             JsonReader json = new JsonReader(jsonFile);
-            json.beginArray();
-            while (json.hasNext()) {
-                json.beginObject();
-                while (json.hasNext()) {
-                    String name = json.nextName();
-                    if ("name".equals(name)) {
-                        list.add(json.nextString());
-                    }
-                }
-                json.endObject();
-            }
-            json.endArray();
+            readTaskList(json, taskPath, "");
         } catch (IOException e) {
             //ignore error
         }
+    }
+
+    void readTaskList(JsonReader json, String taskPath, String curPath) throws IOException {
+        json.beginArray();
+        while (json.hasNext()) {
+            json.beginObject();
+            while (json.hasNext()) {
+                String name = json.nextName();
+                if ("name".equals(name)) {
+                    String taskName = json.nextString();
+                    if (curPath.equals(taskPath)) {
+                        this.list.add(taskName);
+                    }
+                    curPath = curPath + "/" + taskName;
+                } else if ("sub".equals(name)) {
+                    readTaskList(json, taskPath, curPath);
+                }
+            }
+            json.endObject();
+        }
+        json.endArray();
     }
 
     @Override

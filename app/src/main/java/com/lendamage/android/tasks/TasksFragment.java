@@ -22,7 +22,7 @@ public class TasksFragment extends ListFragment {
     public static TasksFragment newInstance(String taskPath) {
         TasksFragment fragment = new TasksFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_TASK_PATH, taskPath);
+        args.putString(ARG_TASK_PATH, taskPath == null ? "" : taskPath);
         fragment.setArguments(args);
         return fragment;
     }
@@ -35,15 +35,6 @@ public class TasksFragment extends ListFragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            taskPath = getArguments().getString(ARG_TASK_PATH);
-        }
-    }
-
-
-    @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
@@ -53,7 +44,10 @@ public class TasksFragment extends ListFragment {
                 + " must implement OnFragmentInteractionListener");
         }
 
-        setListAdapter(new TasksAdapter(activity.getBaseContext(), taskPath));
+        if (getArguments() != null) {
+            this.taskPath = getArguments().getString(ARG_TASK_PATH);
+        }
+        setListAdapter(new TasksAdapter(activity.getBaseContext(), this.taskPath));
     }
 
     @Override
