@@ -30,7 +30,7 @@ public class TasksActivity extends Activity implements TasksFragment.OnFragmentI
 
         if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
-                    .add(R.id.container, TasksFragment.newInstance(this.taskPath))
+                    .add(R.id.container, TasksFragment.newInstance(this.taskPath, 0))
                     .commit();
         }
     }

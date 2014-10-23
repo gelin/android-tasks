@@ -13,16 +13,17 @@ import com.lendamage.android.tasks.dummy.DummyContent;
 
 public class TasksFragment extends ListFragment {
 
-    private static final String ARG_TASK_PATH = "taskPath";
+    private static final String ARG_TASK_PATH = "task_path";
 
     private String taskPath;
 
     private OnFragmentInteractionListener mListener;
 
-    public static TasksFragment newInstance(String taskPath) {
+    public static TasksFragment newInstance(String taskPath, int sectionNumber) {
         TasksFragment fragment = new TasksFragment();
         Bundle args = new Bundle();
         args.putString(ARG_TASK_PATH, taskPath == null ? "" : taskPath);
+        args.putInt(MainActivity.ARG_SECTION_NUMBER, sectionNumber);
         fragment.setArguments(args);
         return fragment;
     }
@@ -42,6 +43,11 @@ public class TasksFragment extends ListFragment {
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                 + " must implement OnFragmentInteractionListener");
+        }
+
+        if (activity instanceof MainActivity) {
+            ((MainActivity) activity).onSectionAttached(
+                    getArguments().getInt(MainActivity.ARG_SECTION_NUMBER));
         }
 
         if (getArguments() != null) {
