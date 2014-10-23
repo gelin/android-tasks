@@ -66,6 +66,7 @@ public class MainActivity extends Activity
                 break;
             case 1:
                 fragment = WebTasksFragment.newInstance(1);
+                break;
             default:
                 fragment = PlaceholderFragment.newInstance(position);
         }

@@ -7,6 +7,9 @@ import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.webkit.WebViewFragment;
 
 
@@ -43,8 +46,30 @@ public class WebTasksFragment extends WebViewFragment {
             ((MainActivity) activity).onSectionAttached(
                     getArguments().getInt(MainActivity.ARG_SECTION_NUMBER));
         }
-
-        //TODO
     }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        WebView webView = (WebView) super.onCreateView(inflater, container, savedInstanceState);
+
+        webView.setWebViewClient(new TasksWebViewClient());
+        WebSettings settings = webView.getSettings();
+        settings.setJavaScriptEnabled(true);
+        webView.loadUrl("http://gmail.com/tasks");
+
+        return webView;
+    }
+
+    static class TasksWebViewClient extends WebViewClient {
+
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            //http://stackoverflow.com/questions/4066438/android-webview-how-to-handle-redirects-in-app-instead-of-opening-a-browser
+            view.loadUrl(url);
+            return false;
+        }
+
+    }
+
 
 }
